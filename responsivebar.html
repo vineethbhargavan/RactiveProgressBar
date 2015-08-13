@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Interactive ProgressBar</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body>
+<script>
+var current_progress , current_div,current_keypath,event;
+var current_event = undefined;
+
+function processIncrement(){
+	if(current_event == undefined){
+	   alert('Kindly select a bar');
+	   return;
+	}
+  	value = current_event.context.progress;
+  	stepvalue = parseInt(document.getElementById('stepvalue').value) ;
+  	value = value+stepvalue;
+  	ractive.set(current_event.keypath+'.progress',value);
+  	if(value >= 100){
+	   ractive.set(current_event.keypath+'.liveColor','#FF0000');
+	}
+
+}
+
+function processDecrement(){
+	if(current_event == undefined){
+	   alert('Kindly select a bar');
+	   return;
+	}
+	value = current_event.context.progress;
+        if(value<=0){
+		alert("Value Can't be less than Zero");
+                return;
+	}
+	stepvalue = parseInt(document.getElementById('stepvalue').value) ;
+        value = value-stepvalue;
+	ractive.set(current_event.keypath+'.progress',value);
+        if(value <= 100 && value >=0){
+		ractive.set(current_event.keypath+'.liveColor',current_event.context.color);
+        }
+}
+
+function handleEvent(event){
+	 current_event = event;
+}
+
+</script>
+<script id="template" type='text/ractive'>
+<div class="container">
+	{{ #each bars:i }}
+	  <div class="progress" on-click='activate' on-tap='activate'aria-valuemax="100" style="width:100%">
+	  <div class="progress-bar progress-bar-striped active" id={{name}} role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="background-color:{{liveColor}};width: {{progress}}%;text-align: center;padding-right:{{progress-100}}%" value ="{{progress}}">{{progress}}
+   	 </div>
+	 </div>
+	{{/each}}
+
+	<table class="table" style="width:10%">
+	<tr>
+	<td>
+		<div class="buttons" id="increment" onClick="processIncrement()">
+		        <i class="fa fa-plus-square"></i>
+		</div>
+	</td>
+	<td>
+		<input type="text" name="stepvalue" id="stepvalue" value="10"  size="5px"/>
+	</td>
+	<td>
+		<div class="buttons" id="decrement" onClick="processDecrement()">
+			<i class="fa fa-minus-square"></i>
+	        </div>
+	</td>
+</div>
+</script>
+
+<script src='http://cdn.ractivejs.org/latest/ractive.min.js'></script>
+<script src="progress.js"></script>
+
+</body>
+</html>
+
